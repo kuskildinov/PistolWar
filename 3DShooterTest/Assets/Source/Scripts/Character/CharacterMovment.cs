@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CharacterMovment : MonoBehaviour
@@ -21,26 +18,41 @@ public class CharacterMovment : MonoBehaviour
     private float _horizontal;
     private float _vertical;
     private bool _grounded;
+    private bool _canMove;
     private float _currentSpeed;
 
     private void Update()
     {
-        ReadInput();
-        _currentSpeed = _walkSpeed;
-        if (_input.Jump())
+        if(_canMove)
         {
-            UpdateGroundCollision();
-            TryJump();
+            ReadInput();
+            _currentSpeed = _walkSpeed;
+            if (_input.Jump())
+            {
+                UpdateGroundCollision();
+                TryJump();
+            }
+            if (_input.Run())
+            {
+                Runing();
+            }
         }
-        if (_input.Run())
-        {
-            Runing();
-        }
+       
     }
 
     private void FixedUpdate()
     {
-        Move();
+        if(_canMove)
+            Move();
+    }
+
+    public void DeactivateCharacterMovment()
+    {
+        _canMove = false;
+    }
+    public void ActivateCharacterMovment()
+    {
+        _canMove = true;
     }
 
     private void Move()
@@ -72,5 +84,6 @@ public class CharacterMovment : MonoBehaviour
     public void Initialize(IInput input)
     {
         _input = input;
+        _canMove = true;
     }
 }

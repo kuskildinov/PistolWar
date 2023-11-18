@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CharacterRotation : MonoBehaviour
@@ -10,6 +8,7 @@ public class CharacterRotation : MonoBehaviour
     [SerializeField] private Rigidbody _rigidbody;
 
     private IInput _input;
+    private bool _canRotate;
     private float _horizontalRotation;
     private float _verticalRotation;
     private float _currentHorizontalRotation;
@@ -17,15 +16,28 @@ public class CharacterRotation : MonoBehaviour
     
     private void LateUpdate()
     {
-        ReadInput(_input);
+        if(_canRotate)
+        {
+            ReadInput(_input);
 
-        _rigidbody.rotation = Quaternion.Euler(0, _horizontalRotation * _sensitivity, 0);        
-        _currentHorizontalRotation = Mathf.Clamp( _currentHorizontalRotation + _verticalRotation * _sensitivity, _verticalRange.x, _verticalRange.y) ;
+            _rigidbody.rotation = Quaternion.Euler(0, _horizontalRotation * _sensitivity, 0);
+            _currentHorizontalRotation = Mathf.Clamp(_currentHorizontalRotation + _verticalRotation * _sensitivity, _verticalRange.x, _verticalRange.y);
 
-        _head.localEulerAngles = new Vector3(_currentHorizontalRotation, 0f, 0f);
-        _verticalRotation = 0;
+            _head.localEulerAngles = new Vector3(_currentHorizontalRotation, 0f, 0f);
+            _verticalRotation = 0;
+        }       
     }
-    
+
+    public void ActivateCharacterRotation()
+    {
+        _canRotate = true;
+    }
+
+    public void DeactivateCharacterRotation()
+    {
+        _canRotate = false;
+    }
+
     private void ReadInput(IInput input)
     {
         _horizontalRotation += input.MouseHorizontalMove();
@@ -35,5 +47,6 @@ public class CharacterRotation : MonoBehaviour
     public void Initialize(IInput input)
     {
         _input = input;
+        _canRotate = true;
     }
 }

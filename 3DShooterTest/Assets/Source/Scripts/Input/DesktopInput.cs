@@ -53,6 +53,8 @@ public class DesktopInput : IInput
 
     public bool PauseButton()
     {
-        return Input.GetKey(KeyCode.Escape);
+        return Input.GetKeyDown(KeyCode.Escape);
     }
+
+
 }
